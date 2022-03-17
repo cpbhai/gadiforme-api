@@ -22,6 +22,9 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use("/api/v1", route);
+app.use("/test", (req, res) => {
+  res.status(200).json({ success: true, message: "Backend is working fine." });
+});
 
 // app.use(express.static(__dirname + "/public"));
 
