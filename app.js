@@ -26,18 +26,6 @@ app.use("/test", (req, res) => {
   res.status(200).json({ success: true, message: "Backend is working fine." });
 });
 
-// app.use(express.static(__dirname + "/public"));
-
-//app.use(express.static(path.join(__dirname,'/public/images')));
-
-app.use(function (req, res, next) {
-  return res.status(404).json({
-    success: false,
-    message: "Page not found!",
-  });
-});
-//require("./utils/cron");
-
 /*Frontend hai*/
 app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("*", (req, res) => {
