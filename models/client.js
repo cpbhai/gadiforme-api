@@ -46,10 +46,13 @@ const clientSchema = new mongoose.Schema({
     enum: ["Client"],
     default: "Client",
   },
+  createdAt: {
+    type: Date,
+    default: new Date(Date.now() + 330 * 60000),
+  },
 });
 
 clientSchema.pre("save", async function (next) {
-  console.log("AB", this.password);
   if (!this.isModified("password")) next();
   this.password = await bcrypt.hash(this.password, 12);
 });

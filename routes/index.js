@@ -8,6 +8,10 @@ router.use((req, res, next) => {
   next();
 });
 
+// @Auth
+const Auth = require("./auth");
+router.use("/auth", Auth);
+
 // @Client
 const Client = require("./client");
 router.use("/client", Client);
