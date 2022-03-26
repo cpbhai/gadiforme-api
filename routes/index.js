@@ -16,4 +16,8 @@ router.use("/auth", Auth);
 const Client = require("./client");
 router.use("/client", Client);
 
+// @Partner
+const Partner = require("./partner");
+router.use("/partner", Partner);
+
 module.exports = router;

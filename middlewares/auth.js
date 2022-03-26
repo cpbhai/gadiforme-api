@@ -1,8 +1,8 @@
 const Client = require("../models/client");
-const catchAsync = require("../middlewares/catchAsync");
+const Partner = require("../models/partner");
 const jwt = require("jsonwebtoken");
 
-exports.isAuthenticated = catchAsync(async (req, res, next) => {
+exports.isAuthenticated = async (req, res, next) => {
   try {
     const token =
       req.body.token || req.query.token || req.headers["x-access-token"];
@@ -19,6 +19,8 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
           let user = null;
           if (decoded.role == "Client")
             user = await Client.findById(decoded._id);
+          else if (decoded.role == "Partner")
+            user = await Partner.findById(decoded._id);
           if (!user) throw new Error("SESSION EXPIRED, PLEASE LOGIN AGAIN.");
           req.user = user;
           return next();
@@ -30,7 +32,7 @@ exports.isAuthenticated = catchAsync(async (req, res, next) => {
     const { message } = err;
     res.status(401).json({ success: false, message });
   }
-});
+};
 
 exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {

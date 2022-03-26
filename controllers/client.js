@@ -1,5 +1,4 @@
 const errorResponse = require("../utils/errorResponse");
-const catchAsync = require("../middlewares/catchAsync");
 const {
   validateClientSignup,
   validateClientLogin,
@@ -7,9 +6,9 @@ const {
 //const mongoose = require("mongoose");
 const Client = require("../models/client");
 const sendEmail = require("../services/sendEmail");
-const { getCurrentDate } = require("../utils/commonFunctions");
+// const { getCurrentDate } = require("../utils/commonFunctions");
 
-exports.signup = catchAsync(async (req, res) => {
+exports.signup = async (req, res) => {
   try {
     req.body = validateClientSignup(req.body);
     const user = await Client.create(req.body);
@@ -18,20 +17,16 @@ exports.signup = catchAsync(async (req, res) => {
   } catch (error) {
     errorResponse(res, error);
   }
-});
+};
 
-exports.login = catchAsync(async (req, res) => {
+exports.login = async (req, res) => {
   try {
-    req.body = validateClientLogin(req.body);
-    console.log(req.body);
+    validateClientLogin(req.body);
     const client = await Client.findOne({ phone: req.body.phone });
     if (!client) throw { message: "either phone or password is incorrect." };
-    const passwordMatch = await client.comparePassword(req.body.password);
-    if (!passwordMatch)
-      throw { message: "either phone or password is incorrect." };
     const token = client.getJWTToken();
     res.status(200).json({ success: true, data: client, token });
   } catch (error) {
     errorResponse(res, error);
   }
-});
+};
