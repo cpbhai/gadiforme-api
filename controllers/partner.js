@@ -38,11 +38,36 @@ exports.sendOtp = async (req, res) => {
     if (!req.body.phone) throw { message: "phone is missing." };
     const partner = await Partner.findOne({ phone: req.body.phone });
     if (!partner) throw { message: "phone is not registered with us." };
-    const otp = getOTP();
-    const { sendOtp } = require("../services/otp");
-    sendOtp(otp, req.body.phone);
-    partner.otp.value = otp;
-    partner.save();
+    const currDate = new Date(new Date().getTime() + 60000 * 330);
+    const blockedTime =
+      partner.otp.blockedTill == null ? null : partner.otp.blockedTill;
+    // console.log(currDate, blockedTime);
+    if (partner.otp.trialCount == 3) {
+      partner.otp.blockedTill = new Date(currDate.getTime() + 60000 * 60 * 24);
+      partner.otp.trialCount = 0;
+      partner.otp.value = null;
+      partner.save();
+      console.log("me");
+      throw {
+        message: `otp limit exceeded, blocked till: ${moment(
+          new Date(partner.otp.blockedTill.getTime() - 60000 * 330)
+        ).format("H:mm:ss DD MMMM YY")}`,
+      };
+    } else if (blockedTime == null || blockedTime <= currDate) {
+      const otp = getOTP();
+      // console.log(otp);
+      const { sendOtp } = require("../services/otp");
+      sendOtp(otp, req.body.phone);
+      partner.otp.value = otp;
+      partner.otp.trialCount += 1;
+      partner.otp.blockedTill = null;
+      partner.save();
+    } else
+      throw {
+        message: `otp limit exceeded, blocked till: ${moment(
+          new Date(blockedTime.getTime() - 60000 * 330)
+        ).format("H:mm:ss DD MMMM YY")}`,
+      };
     res.status(200).json({
       success: true,
       message: `otp was sent successfully on: ${req.body.phone}`,
