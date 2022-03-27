@@ -9,6 +9,7 @@ const Partner = require("../models/partner");
 const Vehicle = require("../models/vehicle");
 const sendEmail = require("../services/sendEmail");
 const { getOTP } = require("../utils/hardcoded");
+const moment = require("moment");
 // const { getCurrentDate } = require("../utils/commonFunctions");
 
 exports.signup = async (req, res) => {
