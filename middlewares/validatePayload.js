@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 const { Types } = mongoose;
 const { ObjectId } = Types;
 const { isEmail, phoneNumber } = require("../utils/validator");
+const { addImage } = require("../services/cloudinary");
+const { getOTP } = require("../utils/hardcoded");
 
 exports.validateClientSignup = function (data) {
   data.isApproved = false;
-  data.otp = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000).toString();
+  data["otp"] = {};
+  data.otp["value"] = getOTP();
   return data;
 };
 
@@ -14,9 +17,15 @@ exports.validateClientLogin = function (data) {
   if (!data.otp) throw { message: "otp is missing." };
 };
 
-exports.validatePartnerSignup = function (data) {
+exports.validatePartnerSignup = async function (data, files) {
   data.isApproved = false;
-  data.otp = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000).toString();
+  data.otp = getOTP();
+  if (files.idFront && files.idFront.length == 1)
+    data.idFront = await addImage(files.idFront[0], "partners");
+  if (files.idRear && files.idRear.length == 1)
+    data.idRear = await addImage(files.idRear[0], "partners");
+  if (files.panPhoto && files.panPhoto.length == 1)
+    data.panPhoto = await addImage(files.panPhoto[0], "partners");
   return data;
 };
 
@@ -26,19 +35,8 @@ exports.validatePartnerLogin = function (data) {
 };
 
 exports.validateAddVehicle = async function (data, who, file) {
-  const cloudinary = require("cloudinary");
-  const DatauriParser = require("datauri/parser");
-  const path = require("path");
   data.postedBy = who;
   data.vehicleNo = data.vehicleNo.toUpperCase().replace(/\s+/g, "");
-  const parser = new DatauriParser();
-  file = parser.format(path.extname(file.originalname).toString(), file.buffer);
-  const result = await cloudinary.v2.uploader.upload(file.content, {
-    folder: "vehicles",
-  });
-  data.photo = {
-    public_id: result.public_id,
-    url: result.secure_url,
-  };
+  data.photo = await addImage(file, "vehicles");
   return data;
 };

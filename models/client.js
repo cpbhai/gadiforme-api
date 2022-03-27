@@ -10,8 +10,9 @@ const clientSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    unique: true,
-    index: true,
+    index: {
+      unique: true,
+    },
   },
   email: {
     type: String,
@@ -36,8 +37,19 @@ const clientSchema = new mongoose.Schema({
     default: new Date(Date.now() + 330 * 60000),
   },
   otp: {
-    type: String,
-    default: null,
+    value: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    trialCount: {
+      type: Number,
+      default: 0,
+    },
+    blockedTill: {
+      type: Date,
+      default: null,
+    },
   },
 });
 

@@ -12,11 +12,22 @@ const sendEmail = require("../services/sendEmail");
 
 exports.signup = async (req, res) => {
   try {
-    req.body = validatePartnerSignup(req.body);
+    // console.log(req.files, req.body);
+    req.body = await validatePartnerSignup(req.body, req.files);
     const user = await Partner.create(req.body);
-    if (user.email) sendEmail("signup", { email: user.email, name: user.name });
+    // if (user.email) sendEmail("signup", { email: user.email, name: user.name });
     res.status(200).json({ success: true, data: user });
   } catch (error) {
+    const cloudinary = require("../services/cloudinary");
+    if (req.body.idFront) {
+      cloudinary.removeImage(req.body.idFront.public_id);
+    }
+    if (req.body.idRear) {
+      cloudinary.removeImage(req.body.idRear.public_id);
+    }
+    if (req.body.panPhoto) {
+      cloudinary.removeImage(req.body.panPhoto.public_id);
+    }
     errorResponse(res, error);
   }
 };
@@ -41,7 +52,7 @@ exports.addvehicle = async (req, res) => {
     res.status(200).json({ success: true, data: vehicle });
   } catch (error) {
     if (req.body.photo) {
-      require("cloudinary").v2.uploader.destroy(req.body.photo.public_id);
+      require("../services/cloudinary").removeImage(req.body.photo.public_id);
     }
     errorResponse(res, error);
   }

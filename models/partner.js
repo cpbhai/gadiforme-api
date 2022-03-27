@@ -10,38 +10,45 @@ const partnerSchema = new mongoose.Schema({
   idFront: {
     public_id: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
     url: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
   },
   idRear: {
     public_id: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
     url: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
   },
   panPhoto: {
     public_id: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
     url: {
       type: String,
-      rquired: true,
+      required: true,
+      select: false,
     },
   },
   phone: {
     type: String,
     required: true,
-    unique: true,
-    index: true,
+    index: {
+      unique: true,
+    },
   },
   email: {
     type: String,
@@ -65,15 +72,11 @@ const partnerSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  ratings: [
-    {
-      value: {
-        type: Number,
-        default: 5,
-        enum: [1, 2, 3, 4, 5],
-      },
-    },
-  ],
+  ratings: {
+    type: Array,
+    default: [],
+    select: false,
+  },
   createdAt: {
     type: Date,
     default: new Date(Date.now() + 330 * 60000),
@@ -81,6 +84,7 @@ const partnerSchema = new mongoose.Schema({
   otp: {
     type: String,
     default: null,
+    select: false,
   },
 });
 
