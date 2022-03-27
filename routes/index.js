@@ -20,4 +20,8 @@ router.use("/client", Client);
 const Partner = require("./partner");
 router.use("/partner", Partner);
 
+// @General
+const General = require("./general");
+router.use("/general", General);
+
 module.exports = router;

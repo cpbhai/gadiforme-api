@@ -52,6 +52,16 @@ const vehicleSchema = new mongoose.Schema({
     ref: "Partner",
     required: true,
   },
+  busyDays: {
+    type: Array,
+    default: [],
+    select: false,
+  },
+  serviceAreas: {
+    type: Array,
+    default: [],
+    select: false,
+  },
 });
 
 module.exports =

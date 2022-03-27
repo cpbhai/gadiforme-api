@@ -37,3 +37,12 @@ exports.validateAddVehicle = async function (data, who, file) {
   data.photo = await addImage(file, "vehicles");
   return data;
 };
+
+exports.validateShowAvailableVehicles = (query) => {
+  const { dropoff, pickup, journey, date, distance } = query;
+  if (!dropoff) throw { message: "dropoff is missing." };
+  if (!pickup) throw { message: "pickup is missing." };
+  if (!journey) throw { message: "journey is missing." };
+  if (!date) throw { message: "date is missing." };
+  if (!distance) throw { message: "distance is missing." };
+};
