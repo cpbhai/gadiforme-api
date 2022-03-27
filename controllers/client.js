@@ -13,7 +13,6 @@ exports.signup = async (req, res) => {
   try {
     req.body = validateClientSignup(req.body);
     const user = await Client.create(req.body);
-    user.otp.value = undefined;
     // if (user.email) sendEmail("signup", { email: user.email, name: user.name });
     res.status(200).json({ success: true, data: user });
   } catch (error) {

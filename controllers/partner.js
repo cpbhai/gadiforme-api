@@ -8,6 +8,7 @@ const {
 const Partner = require("../models/partner");
 const Vehicle = require("../models/vehicle");
 const sendEmail = require("../services/sendEmail");
+const { getOTP } = require("../utils/hardcoded");
 // const { getCurrentDate } = require("../utils/commonFunctions");
 
 exports.signup = async (req, res) => {
@@ -32,12 +33,42 @@ exports.signup = async (req, res) => {
   }
 };
 
+exports.sendOtp = async (req, res) => {
+  try {
+    if (!req.body.phone) throw { message: "phone is missing." };
+    const partner = await Partner.findOne({ phone: req.body.phone });
+    if (!partner) throw { message: "phone is not registered with us." };
+    const otp = getOTP();
+    const { sendOtp } = require("../services/otp");
+    sendOtp(otp, req.body.phone);
+    partner.otp.value = otp;
+    partner.save();
+    res.status(200).json({
+      success: true,
+      message: `otp was sent successfully on: ${req.body.phone}`,
+    });
+  } catch (error) {
+    errorResponse(res, error);
+  }
+};
+
 exports.login = async (req, res) => {
   try {
     validatePartnerLogin(req.body);
-    const partner = await Partner.findOne({ phone: req.body.phone });
+    const partner = await Partner.findOne({
+      phone: req.body.phone,
+    }).select("+otp.value");
     if (!partner) throw { message: "either phone or password is incorrect." };
+    // console.log(partner);
+    // if(partner.otp.blockedTill)
+    if (partner.otp.value == null) throw { message: "otp is expired." };
+    if (partner.otp.value != req.body.otp) {
+      throw { message: "wrong otp was entered." };
+    }
     const token = partner.getJWTToken();
+    partner.isApproved = true;
+    partner.otp = { value: null, trialCount: 0, blockedTill: null };
+    partner.save();
     res.status(200).json({ success: true, data: partner, token });
   } catch (error) {
     errorResponse(res, error);

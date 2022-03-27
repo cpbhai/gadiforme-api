@@ -7,8 +7,6 @@ const { getOTP } = require("../utils/hardcoded");
 
 exports.validateClientSignup = function (data) {
   data.isApproved = false;
-  data["otp"] = {};
-  data.otp["value"] = getOTP();
   return data;
 };
 
@@ -19,7 +17,6 @@ exports.validateClientLogin = function (data) {
 
 exports.validatePartnerSignup = async function (data, files) {
   data.isApproved = false;
-  data.otp = getOTP();
   if (files.idFront && files.idFront.length == 1)
     data.idFront = await addImage(files.idFront[0], "partners");
   if (files.idRear && files.idRear.length == 1)

@@ -82,9 +82,19 @@ const partnerSchema = new mongoose.Schema({
     default: new Date(Date.now() + 330 * 60000),
   },
   otp: {
-    type: String,
-    default: null,
-    select: false,
+    value: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    trialCount: {
+      type: Number,
+      default: 0,
+    },
+    blockedTill: {
+      type: Date,
+      default: null,
+    },
   },
 });
 
