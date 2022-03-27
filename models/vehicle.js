@@ -18,6 +18,9 @@ const vehicleSchema = new mongoose.Schema({
   vehicleNo: {
     type: String,
     required: true,
+    index: {
+      unique: true,
+    },
   },
   category: {
     type: String,

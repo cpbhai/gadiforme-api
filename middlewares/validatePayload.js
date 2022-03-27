@@ -25,7 +25,20 @@ exports.validatePartnerLogin = function (data) {
   if (!data.otp) throw { message: "otp is missing." };
 };
 
-exports.validateAddVehicle = function (data, who) {
+exports.validateAddVehicle = async function (data, who, file) {
+  const cloudinary = require("cloudinary");
+  const DatauriParser = require("datauri/parser");
+  const path = require("path");
   data.postedBy = who;
+  data.vehicleNo = data.vehicleNo.toUpperCase().replace(/\s+/g, "");
+  const parser = new DatauriParser();
+  file = parser.format(path.extname(file.originalname).toString(), file.buffer);
+  const result = await cloudinary.v2.uploader.upload(file.content, {
+    folder: "vehicles",
+  });
+  data.photo = {
+    public_id: result.public_id,
+    url: result.secure_url,
+  };
   return data;
 };

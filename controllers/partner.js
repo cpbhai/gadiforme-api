@@ -35,10 +35,14 @@ exports.login = async (req, res) => {
 
 exports.addvehicle = async (req, res) => {
   try {
-    req.body = validateAddVehicle(req.body, req.user._id);
+    // console.log(req.body);
+    req.body = await validateAddVehicle(req.body, req.user._id, req.file);
     const vehicle = await Vehicle.create(req.body);
     res.status(200).json({ success: true, data: vehicle });
   } catch (error) {
+    if (req.body.photo) {
+      require("cloudinary").v2.uploader.destroy(req.body.photo.public_id);
+    }
     errorResponse(res, error);
   }
 };
