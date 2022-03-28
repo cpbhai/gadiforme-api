@@ -1,6 +1,6 @@
 var nodemailer = require("nodemailer");
 
-module.exports = function (mailOptions, cb) {
+module.exports = function (mailOptions) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -9,16 +9,13 @@ module.exports = function (mailOptions, cb) {
     },
   });
 
-  transporter.sendMail(
-    mailOptions,
-    cb
-      ? cb
-      : (error, info) => {
-          if (error) {
-            return console.log(error);
-          }
-          console.log("Message sent: %s", info.messageId, mailOptions.to);
-          return info.messageId;
-        }
-  );
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      const Log = require("../models/log");
+      const data = new Log({ data: error });
+      data.save();
+      return;
+    }
+    // console.log("Message sent: %s", info.messageId, mailOptions.to);
+  });
 };

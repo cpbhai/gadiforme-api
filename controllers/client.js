@@ -13,7 +13,7 @@ exports.signup = async (req, res) => {
   try {
     req.body = validateClientSignup(req.body);
     const user = await Client.create(req.body);
-    // if (user.email) sendEmail("signup", { email: user.email, name: user.name });
+    if (user.email) sendEmail("signup", { email: user.email, name: user.name });
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     errorResponse(res, error);
@@ -38,7 +38,7 @@ exports.sendOtp = async (req, res) => {
       throw {
         message: `otp limit exceeded, blocked till: ${moment(
           new Date(client.otp.blockedTill.getTime() - 60000 * 330)
-        ).format("H:mm:ss DD MMMM YY")}`,
+        ).format("hh:mm:ss DD MMMM YY")}`,
       };
     } else if (blockedTime == null || blockedTime <= currDate) {
       const otp = getOTP();
@@ -53,7 +53,7 @@ exports.sendOtp = async (req, res) => {
       throw {
         message: `otp limit exceeded, blocked till: ${moment(
           new Date(blockedTime.getTime() - 60000 * 330)
-        ).format("H:mm:ss DD MMMM YY")}`,
+        ).format("hh:mm:ss DD MMMM YY")}`,
       };
     res.status(200).json({
       success: true,
