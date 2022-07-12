@@ -12,11 +12,11 @@ module.exports.register = async (req, res) => {
     user.password = undefined;
     userDataModel.create({ user: user._id });
     res
-      .status(200)
+      .status(201)
       .json({ success: true, message: "Registered Successfully", token, user });
   } catch (error) {
     const response = errorResponse(error);
-    console.log("Client Register Error", error);
+    console.log("User Register Error", error);
     res
       .status(response.code)
       .json({ success: false, message: response.message });
@@ -37,9 +37,13 @@ module.exports.login = async (req, res) => {
       .json({ success: true, message: "Logged In Successfully", token, user });
   } catch (error) {
     const response = errorResponse(error);
-    console.log("Client Log In Error", error);
+    console.log("User Log In Error", error);
     res
       .status(response.code)
       .json({ success: false, message: response.message });
   }
+};
+
+module.exports.load = async (req, res) => {
+  res.status(200).json({ success: true, user: req.user });
 };

@@ -29,13 +29,9 @@ const userDataSchema = new mongoose.Schema({
     type: String,
     default: null, //edit in personal details
   },
-  personalPhoto: {
-    Bucket: { type: String, default: null },
-    Key: { type: String, default: null }, //can't be edited once uploaded
-  },
-  legalIdPhoto: {
-    Bucket: { type: String, default: null }, //can't be edited once uploaded
-    Key: { type: String, default: null },
+  images: {
+    type: Array,
+    default: [],
   },
   pickupLocation: {
     state: {

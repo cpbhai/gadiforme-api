@@ -5,9 +5,10 @@ function titleCase(string) {
   }
   return sentence.join(" ");
 }
-module.exports = (error) => {
+module.exports = (error, haveCode) => {
   let code = 500,
     message = error.message;
+  if (haveCode) code = haveCode;
   if (error.code === 11000) {
     //error by mongodb
     //violation of unique:true
