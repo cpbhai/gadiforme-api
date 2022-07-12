@@ -1,0 +1,10 @@
+Backend:
+    User:
+        forgot password
+        reset password
+    Partner:
+        Partner add State, City, availCarTypes
+    Trip:
+        Model design
+        Add Trip with SMS
+        My Trips with project of contact if not verified legalId and photo and phone

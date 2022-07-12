@@ -23,6 +23,12 @@ app.use("/test", (req, res) => {
   res.status(200).json({ success: true, message: "Backend is working fine." });
 });
 
+app.use(function (_, res) {
+  res
+    .status(500)
+    .json({ success: false, message: "No such matching route was found" });
+});
+
 const port = process.env.PORT || 3001;
 app.listen(port, function () {
   console.log("Express app running on port " + port);

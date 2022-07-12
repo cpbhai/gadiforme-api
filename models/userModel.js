@@ -6,6 +6,10 @@ const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
+    phoneExt: {
+      type: String,
+      default: "+91",
+    },
     phone: {
       type: String,
       required: true,

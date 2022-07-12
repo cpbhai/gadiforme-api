@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { isEmail } = require("../utils/validator");
 
 const userDataSchema = new mongoose.Schema({
   user: {
@@ -26,13 +25,31 @@ const userDataSchema = new mongoose.Schema({
       default: false,
     },
   },
+  email: {
+    type: String,
+    default: null, //edit in personal details
+  },
   personalPhoto: {
-    Bucket: String,
-    Key: String,
+    Bucket: { type: String, default: null },
+    Key: { type: String, default: null }, //can't be edited once uploaded
   },
   legalIdPhoto: {
-    Bucket: String,
-    Key: String,
+    Bucket: { type: String, default: null }, //can't be edited once uploaded
+    Key: { type: String, default: null },
+  },
+  pickupLocation: {
+    state: {
+      type: String,
+      default: null,
+    },
+    city: {
+      type: String,
+      default: null,
+    },
+  },
+  ownVehicleTypes: {
+    type: Array,
+    default: [],
   },
 });
 

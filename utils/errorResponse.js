@@ -5,7 +5,7 @@ function titleCase(string) {
   }
   return sentence.join(" ");
 }
-export default (error) => {
+module.exports = (error) => {
   let code = 500,
     message = error.message;
   if (error.code === 11000) {

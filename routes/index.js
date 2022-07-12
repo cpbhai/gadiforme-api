@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { userRoute } = require("../routes/userRoute");
+const userRoute = require("../routes/userRoute");
 
 // @Base Url
 router.use((req, res, next) => {
