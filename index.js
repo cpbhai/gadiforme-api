@@ -20,7 +20,7 @@ app.use(fileUpload());
 require("./configuration/database")();
 
 app.use(logger("dev"));
-app.use("/api/v1", route);
+app.use("/v1", route);
 app.use("/test", (req, res) => {
   res.status(200).json({ success: true, message: "Backend is working fine." });
 });

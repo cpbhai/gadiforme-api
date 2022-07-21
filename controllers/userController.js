@@ -1,5 +1,5 @@
 const userModel = require("../models/userModel");
-const userDataModel = require("../models/userDataModel");
+const userDataModel = require("../models/userdataModel");
 const errorResponse = require("../utils/errorResponse");
 
 module.exports.register = async (req, res) => {

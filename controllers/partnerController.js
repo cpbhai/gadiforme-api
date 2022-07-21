@@ -1,4 +1,4 @@
-const userDataModel = require("../models/userDataModel");
+const userDataModel = require("../models/userdataModel");
 const errorResponse = require("../utils/errorResponse");
 const { saveImages, deleteImages } = require("../services/s3");
 
@@ -6,15 +6,16 @@ module.exports.addInfo = async (req, res) => {
   try {
     let { images, state, city, ownVehicleTypes, email } = req.body;
     let data = {};
-    console.log(req.body, req.file, req.files);
+    // console.log(req.body, req.file, req.files);
+    // return;
     //
-    if (images && images.length) {
-      if (!Array.isArray(images)) images = [images];
-    //   images = await saveImages(images, req.user.user.phone, "partners");
-      deleteImages(req.user.images);
-    }
+    // if (images && images.length) {
+    //   if (!Array.isArray(images)) images = [images];
+    // //   images = await saveImages(images, req.user.user.phone, "partners");
+    //   deleteImages(req.user.images);
+    // }
     //
-
+    if (images) data.images = images;
     if (state || city) {
       data.pickupLocation = {};
       if (state) data.pickupLocation.state = state;

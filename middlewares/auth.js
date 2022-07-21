@@ -1,4 +1,4 @@
-const userDataModel = require("../models/userDataModel");
+const userDataModel = require("../models/userdataModel");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 

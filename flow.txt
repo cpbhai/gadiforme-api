@@ -4,7 +4,8 @@ Backend:
         -reset password
         load user
     Partner:
-        +Partner add State, City, availCarTypes and dummy hardcoded images
+        Partner add S
+        tate, City, availCarTypes and dummy hardcoded images
     Trip:
         Add Trip with SMS
-        My Trips with project of contact if not verified legalId and photo and phone
+        Frontend Start
