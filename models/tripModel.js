@@ -71,6 +71,10 @@ const tripModel = new mongoose.Schema(
       client: {
         status: { type: Boolean, default: false },
         otp: { type: String, default: null },
+        trialCount: {
+          type: Number,
+          default: 3,
+        },
       },
     },
   },

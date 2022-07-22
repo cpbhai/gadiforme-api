@@ -12,4 +12,11 @@ router.post(
 
 router.get("/list/:trip", applicationController.list);
 
+router.put(
+  "/book/:trip/:application",
+  auth.isAuthenticated,
+  auth.authorizeRoles("Client"),
+  applicationController.book
+);
+
 module.exports = router;

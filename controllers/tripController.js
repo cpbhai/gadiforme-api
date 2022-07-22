@@ -46,7 +46,7 @@ module.exports.add = async (req, res) => {
         );
     data = await userDataModel.aggregate(data);
     // return res.json({ data });
-    let message = `New Trip Alert From GadiForMe\nCheck Now at: https://partner.gadiforme.com/${trip._id}`;
+    let message = `New Trip From GadiForMe\nCheck Now at: https://partner.gadiforme.com/trip/${trip._id}`;
     sendSMS(
       message,
       data.map((each) => each.phone)
