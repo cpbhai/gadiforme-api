@@ -10,5 +10,10 @@ router.post(
   tripController.add
 );
 
-router.get("/list", auth.isAuthenticated, tripController.list);
+router.get(
+  "/list",
+  auth.isAuthenticated,
+  auth.verifiedUser,
+  tripController.list
+);
 module.exports = router;

@@ -2,7 +2,7 @@ const tripModel = require("../models/tripModel");
 const applicationModel = require("../models/applicationModel");
 const errorResponse = require("../utils/errorResponse");
 const mongoose = require("mongoose");
-// const { ObjectId } = mongoose.Types;
+const { ObjectId } = mongoose.Types;
 const sendSMS = require("../services/sms");
 
 module.exports.add = async (req, res) => {
@@ -12,6 +12,7 @@ module.exports.add = async (req, res) => {
       throw { message: "Invalid Trip" };
     const tripDoc = await tripModel.findById(trip).lean();
     if (!tripDoc) throw { message: "No Such Trip Exists" };
+    if (tripDoc.partner) throw { message: "This Trip is already booked" };
     let data = {
       applicant: req.user.user._id,
       trip,
@@ -37,9 +38,39 @@ module.exports.list = async (req, res) => {
     if (!mongoose.isValidObjectId(trip)) throw { message: "Invalid Trip" };
     const tripDoc = await tripModel.findById(trip).lean();
     if (!tripDoc) throw { message: "No Such Trip Exists" };
-    const applications = await applicationModel
-      .find({ trip })
-      .sort({ createdAt: -1 });
+    const applications = await applicationModel.aggregate([
+      {
+        $match: {
+          trip: ObjectId(trip),
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "applicant",
+          foreignField: "user",
+          as: "applicant",
+        },
+      },
+      {
+        $unwind: "$applicant",
+      },
+      {
+        $project: {
+          _id: true,
+          cost: true,
+          image: {
+            $arrayElemAt: ["$applicant.images", 0],
+          },
+          vehicle: true,
+        },
+      },
+    ]);
     res.status(200).json({ success: true, applications });
   } catch (error) {
     const response = errorResponse(error);

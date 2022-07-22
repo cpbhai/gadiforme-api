@@ -7,6 +7,7 @@ router.post(
   "/add",
   auth.isAuthenticated,
   auth.authorizeRoles("Partner"),
+  auth.verifiedUser,
   applicationController.add
 );
 

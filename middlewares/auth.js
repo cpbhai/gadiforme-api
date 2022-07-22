@@ -66,3 +66,22 @@ exports.authorizeRoles = (...roles) => {
     }
   };
 };
+
+exports.verifiedUser = (req, res, next) => {
+  try {
+    const { phone, personalPhoto, legalIdPhoto } = req.user.verification;
+    if (!phone) throw { message: "Please, Verify Your Phone, First" };
+    if (!personalPhoto)
+      throw {
+        message: "Your Photo is not verified by us, Call us at 8077015752",
+      };
+    if (!legalIdPhoto)
+      throw {
+        message:
+          "Your Legal Photo is not verified by us, Call us at 8077015752",
+      };
+    next();
+  } catch (err) {
+    res.status(403).json({ success: false, message: err.message });
+  }
+};

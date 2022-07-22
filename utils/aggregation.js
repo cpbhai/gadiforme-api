@@ -117,9 +117,169 @@ module.exports.addTripSingleSide = (
 
 module.exports.listTrips = (user) => {
   let pipeline = [];
-  if (user.role == "Client") pipeline.push({ $match: { client: user._id } });
-  else if (user.role == "Partner")
-    pipeline.push({ $match: { partner: user._id } });
+  const verifCondition = {
+    $and: [
+      { $eq: ["$userdata.verification.phone", true] },
+      { $eq: ["$userdata.verification.personalPhoto", true] },
+      { $eq: ["$userdata.verification.legalIdPhoto", true] },
+    ],
+  };
+  if (user.role == "Client") {
+    pipeline.push(
+      { $match: { client: user._id } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "partner",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "partner",
+          foreignField: "user",
+          as: "userdata",
+        },
+      },
+      {
+        $unwind: "$userdata",
+      },
+      {
+        $project: {
+          _id: true,
+          from: true,
+          to: true,
+          user: {
+            phone: true,
+            phoneExt: true,
+          },
+          isRoundTrip: true,
+          when: true,
+          returnTime: true,
+          cost: true,
+          advancePaid: true,
+          "verified.client.status": true,
+          "verified.client.otp": true,
+          createdAt: true,
+          vehicle: true,
+        },
+      }
+    );
+  } else if (user.role == "Partner") {
+    pipeline.push(
+      { $match: { partner: user._id } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "client",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "client",
+          foreignField: "user",
+          as: "userdata",
+        },
+      },
+      {
+        $unwind: "$userdata",
+      },
+      {
+        $project: {
+          _id: true,
+          from: true,
+          to: true,
+          user: {
+            phone: {
+              $cond: {
+                if: verifCondition,
+                then: "$user.phone",
+                else: "Customer is not verified yet",
+              },
+            },
+            phoneExt: {
+              $cond: {
+                if: verifCondition,
+                then: "$user.phoneExt",
+                else: "Oops",
+              },
+            },
+          },
+          isRoundTrip: true,
+          when: true,
+          returnTime: true,
+          cost: true,
+          advancePaid: true,
+          "verified.client.status": true,
+          createdAt: true,
+        },
+      }
+    );
+  } else {
+    pipeline.push(
+      {
+        $lookup: {
+          from: "users",
+          localField: "client",
+          foreignField: "_id",
+          as: "client",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "partner",
+          foreignField: "_id",
+          as: "partner",
+        },
+      },
+      {
+        $unwind: "$client",
+      },
+      {
+        $unwind: "$partner",
+      },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "client._id",
+          foreignField: "user",
+          as: "clientdata",
+        },
+      },
+      {
+        $lookup: {
+          from: "userdatas",
+          localField: "partner._id",
+          foreignField: "user",
+          as: "partnerdata",
+        },
+      },
+      {
+        $unwind: {
+          path: "$clientdata",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $unwind: {
+          path: "$partnerdata",
+          preserveNullAndEmptyArrays: true,
+        },
+      }
+    );
+  }
   pipeline.push(
     {
       $sort: {
