@@ -6,6 +6,7 @@ const {
   addTripRoundTrip,
   listTrips,
 } = require("../utils/aggregation");
+const mongoose = require("mongoose");
 const sendSMS = require("../services/sms");
 
 function getRandomIntInclusive(min, max) {
@@ -70,6 +71,43 @@ module.exports.list = async (req, res) => {
   } catch (error) {
     const response = errorResponse(error);
     console.log("Trip List Error", error);
+    res
+      .status(response.code)
+      .json({ success: false, message: response.message });
+  }
+};
+
+module.exports.startByVerifyingClient = async (req, res) => {
+  try {
+    let { trip, otp } = req.body;
+    if (!trip || !mongoose.isValidObjectId(trip))
+      throw { message: "Invalid Trip" };
+    trip = await tripModel.findById(trip);
+    if (!trip) throw { message: "No Such Trip Exists" };
+    if (!trip.partner) throw { message: "Trip has not been booked yet" };
+    if (trip.partner.toString() != req.user.user._id.toString())
+      throw { message: "You are not allowed to verify this client" };
+    if (trip.verified.client.status) throw { message: "Already Verified" };
+
+    if (trip.verified.client.trialCount == 0)
+      throw { message: "Trial Count exceeded, Please, Call at 8077015752" };
+    if (trip.verified.client.otp == otp) {
+      trip.verified.client.status = true;
+      trip.verified.client.trialCount = 0;
+      trip.save();
+      res
+        .status(200)
+        .json({ success: true, message: "OTP Verified Successfully" });
+    } else {
+      --trip.verified.client.trialCount;
+      trip.save();
+      throw {
+        message: `Wrong OTP, Only: ${trip.verified.client.trialCount} Trials Left`,
+      };
+    }
+  } catch (error) {
+    const response = errorResponse(error);
+    console.log("Trip Start By Verification Error", error);
     res
       .status(response.code)
       .json({ success: false, message: response.message });

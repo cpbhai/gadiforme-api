@@ -16,4 +16,11 @@ router.get(
   auth.verifiedUser,
   tripController.list
 );
+
+router.put(
+  "/start-by-verifying-client",
+  auth.isAuthenticated,
+  auth.authorizeRoles("Partner"),
+  tripController.startByVerifyingClient
+);
 module.exports = router;
