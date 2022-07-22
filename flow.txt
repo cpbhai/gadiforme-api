@@ -1,4 +1,3 @@
-send sms to admin, on addition of new trip
 partner apply to trip
 client get applications of my trip
 client get my trips
