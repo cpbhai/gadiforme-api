@@ -9,4 +9,7 @@ router.post(
   auth.authorizeRoles("Partner"),
   applicationController.add
 );
+
+router.get("/list/:trip", applicationController.list);
+
 module.exports = router;

@@ -114,3 +114,20 @@ module.exports.addTripSingleSide = (
   );
   return pipeline;
 };
+
+module.exports.listTrips = (user) => {
+  let pipeline = [];
+  if (user.role == "Client") pipeline.push({ $match: { client: user._id } });
+  if (user.role == "Partner") pipeline.push({ $match: { partner: user._id } });
+  pipeline.push(
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
+      $limit: 10,
+    }
+  );
+  return pipeline;
+};

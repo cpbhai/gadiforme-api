@@ -9,4 +9,6 @@ router.post(
   auth.authorizeRoles("Client"),
   tripController.add
 );
+
+router.get("/list", auth.isAuthenticated, tripController.list);
 module.exports = router;

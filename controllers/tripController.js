@@ -1,7 +1,11 @@
 const userDataModel = require("../models/userdataModel");
 const tripModel = require("../models/tripModel");
 const errorResponse = require("../utils/errorResponse");
-const { addTripSingleSide, addTripRoundTrip } = require("../utils/aggregation");
+const {
+  addTripSingleSide,
+  addTripRoundTrip,
+  listTrips,
+} = require("../utils/aggregation");
 const sendSMS = require("../services/sms");
 
 function getRandomIntInclusive(min, max) {
@@ -59,6 +63,15 @@ module.exports.add = async (req, res) => {
   }
 };
 
-module.exports.load = async (req, res) => {
-  res.status(200).json({ success: true, user: req.user });
+module.exports.list = async (req, res) => {
+  try {
+    const trips = await tripModel.aggregate(listTrips(req.user.user));
+    res.status(200).json({ success: true, trips });
+  } catch (error) {
+    const response = errorResponse(error);
+    console.log("Trip List Error", error);
+    res
+      .status(response.code)
+      .json({ success: false, message: response.message });
+  }
 };

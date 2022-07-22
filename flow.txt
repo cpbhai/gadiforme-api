@@ -1,7 +1,3 @@
-partner apply to trip
-client get applications of my trip
-client get my trips
-partner my trips
 client book an application with dummy payment_id, sms alert to Admin and Partner
 verify client trip by driver with otp
 verify phone of users and email of users api
