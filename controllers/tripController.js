@@ -1,7 +1,7 @@
 const userDataModel = require("../models/userdataModel");
 const tripModel = require("../models/tripModel");
 const errorResponse = require("../utils/errorResponse");
-const { addTrip } = require("../utils/aggregation");
+const { addTripSingleSide, addTripRoundTrip } = require("../utils/aggregation");
 const sendSMS = require("../services/sms");
 
 function getRandomIntInclusive(min, max) {
@@ -22,7 +22,7 @@ module.exports.add = async (req, res) => {
       client: req.user.user._id,
       "verified.client.otp": getRandomIntInclusive(1000, 9999),
     };
-    if (returnTime) data.returnTime = returnTime;
+    if (isRoundTrip && returnTime) data.returnTime = returnTime;
     if (
       preferredVehicles &&
       Array.isArray(preferredVehicles) &&
@@ -31,14 +31,23 @@ module.exports.add = async (req, res) => {
       data.preferredVehicles = preferredVehicles;
     const trip = await tripModel.create(data);
     //SMS
-    data = addTrip(from.state, from.city, preferredVehicles);
+    data = isRoundTrip
+      ? addTripRoundTrip(from.state, from.city, preferredVehicles)
+      : addTripSingleSide(
+          from.state,
+          from.city,
+          preferredVehicles,
+          to.state,
+          to.city
+        );
     data = await userDataModel.aggregate(data);
-    // return res.json({ data: data.map((each) => each.user.phone) });
+    // return res.json({ data });
     let message = `New Trip Alert From GadiForMe\nCheck Now at: https://partner.gadiforme.com/${trip._id}`;
     sendSMS(
       message,
-      data.map((each) => each.user.phone)
+      data.map((each) => each.phone)
     );
+    sendSMS(message.replace("partner", "admin"), ["8077015752"]);
 
     res.status(201).json({ success: true, message: "Trip Added Successfully" });
   } catch (error) {
