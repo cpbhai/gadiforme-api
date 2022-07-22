@@ -226,59 +226,6 @@ module.exports.listTrips = (user) => {
         },
       }
     );
-  } else {
-    pipeline.push(
-      {
-        $lookup: {
-          from: "users",
-          localField: "client",
-          foreignField: "_id",
-          as: "client",
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "partner",
-          foreignField: "_id",
-          as: "partner",
-        },
-      },
-      {
-        $unwind: "$client",
-      },
-      {
-        $unwind: "$partner",
-      },
-      {
-        $lookup: {
-          from: "userdatas",
-          localField: "client._id",
-          foreignField: "user",
-          as: "clientdata",
-        },
-      },
-      {
-        $lookup: {
-          from: "userdatas",
-          localField: "partner._id",
-          foreignField: "user",
-          as: "partnerdata",
-        },
-      },
-      {
-        $unwind: {
-          path: "$clientdata",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $unwind: {
-          path: "$partnerdata",
-          preserveNullAndEmptyArrays: true,
-        },
-      }
-    );
   }
   pipeline.push(
     {
