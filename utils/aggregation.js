@@ -118,7 +118,8 @@ module.exports.addTripSingleSide = (
 module.exports.listTrips = (user) => {
   let pipeline = [];
   if (user.role == "Client") pipeline.push({ $match: { client: user._id } });
-  if (user.role == "Partner") pipeline.push({ $match: { partner: user._id } });
+  else if (user.role == "Partner")
+    pipeline.push({ $match: { partner: user._id } });
   pipeline.push(
     {
       $sort: {
