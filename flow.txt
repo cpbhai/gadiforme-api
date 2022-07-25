@@ -1,4 +1,1 @@
-verify client trip by driver with otp
-verify phone of users
-
-frontend
+frontend start
