@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const locationObj = {
-  state: {
+  State: {
     type: String,
     required: true,
   },
-  city: {
+  City: {
     type: String,
     required: true,
   },
-  place: {
+  Place: {
     type: String,
     required: true,
   },
@@ -17,7 +17,7 @@ const locationObj = {
 
 const tripModel = new mongoose.Schema(
   {
-    client: {
+    Client: {
       Id: {
         Bucket: {
           type: String,
@@ -25,16 +25,17 @@ const tripModel = new mongoose.Schema(
         },
         Key: { type: String, default: null },
       },
-      phone: {
+      Phone: {
         type: String,
         required: true,
       },
-      phoneExt: {
+      PhoneExt: {
         type: String,
         default: "+91",
       },
+      Name: { type: String, required: true },
     },
-    partner: {
+    Partner: {
       Id: {
         Bucket: {
           type: String,
@@ -42,50 +43,67 @@ const tripModel = new mongoose.Schema(
         },
         Key: { type: String, default: null },
       },
-      phone: {
+      Phone: {
         type: String,
-        required: true,
+        default: null,
       },
-      phoneExt: {
+      PhoneExt: {
         type: String,
-        default: "+91",
+        default: null,
       },
+      Name: { type: String, default: null },
     },
-    from: locationObj,
-    to: locationObj,
-    isRoundTrip: {
+    From: locationObj,
+    To: locationObj,
+    IsRoundTrip: {
       type: Boolean,
       required: true,
     },
-    when: {
+    When: {
       type: Date,
       required: true,
     },
-    returnTime: {
+    ReturnTime: {
       type: Date,
       default: null, //if not round trip
     },
-    payment_id: {
+    PaymentId: {
       type: String,
       default: null,
     },
-    vehicle: {
-      title: {
+    Vehicle: {
+      Title: {
         type: String,
         default: null,
       },
-      registrationNo: {
+      RegistrationNo: {
         type: String,
         default: null,
       },
     },
-    cost: {
+    TotalCost: {
       type: Number,
       default: null,
     },
-    advancePaid: {
+    AdvancePaid: {
       type: Number,
       default: null,
+    },
+    NoOfPerson: {
+      type: Number,
+      required: true,
+    },
+    PreferredVehicles: {
+      type: Array,
+      default: [],
+    },
+    Purpose: {
+      type: String,
+      required: true,
+    },
+    AnyMessage: {
+      type: String,
+      defaul: null,
     },
   },
   {
