@@ -25,8 +25,8 @@ module.exports.register = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   try {
-    const { phone, password } = req.body;
-    const user = await userModel.findOne({ phone }).select("+password");
+    const { phone, password, role } = req.body;
+    const user = await userModel.findOne({ role, phone }).select("+password");
     if (!user) throw { message: "No Such User Exists" };
     const passwordMatched = await user.comparePassword(password);
     if (!passwordMatched) throw { message: "No Such User Exists" };
