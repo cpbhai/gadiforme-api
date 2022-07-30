@@ -18,14 +18,38 @@ const locationObj = {
 const tripModel = new mongoose.Schema(
   {
     client: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: true,
+      Id: {
+        Bucket: {
+          type: String,
+          default: null,
+        },
+        Key: { type: String, default: null },
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      phoneExt: {
+        type: String,
+        default: "+91",
+      },
     },
     partner: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      default: null,
+      Id: {
+        Bucket: {
+          type: String,
+          default: null,
+        },
+        Key: { type: String, default: null },
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      phoneExt: {
+        type: String,
+        default: "+91",
+      },
     },
     from: locationObj,
     to: locationObj,
@@ -50,9 +74,9 @@ const tripModel = new mongoose.Schema(
         type: String,
         default: null,
       },
-      image: {
-        Bucket: { type: String, default: null },
-        Key: { type: String, default: null },
+      registrationNo: {
+        type: String,
+        default: null,
       },
     },
     cost: {
@@ -62,20 +86,6 @@ const tripModel = new mongoose.Schema(
     advancePaid: {
       type: Number,
       default: null,
-    },
-    preferredVehicles: {
-      type: Array,
-      default: [],
-    },
-    verified: {
-      client: {
-        status: { type: Boolean, default: false },
-        otp: { type: String, default: null },
-        trialCount: {
-          type: Number,
-          default: 3,
-        },
-      },
     },
   },
   {
