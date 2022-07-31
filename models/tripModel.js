@@ -20,11 +20,10 @@ const tripModel = new mongoose.Schema(
   {
     Client: {
       Id: {
-        Bucket: {
+        Image: {
           type: String,
           default: null,
         },
-        Key: { type: String, default: null },
       },
       Phone: {
         type: String,
@@ -38,11 +37,10 @@ const tripModel = new mongoose.Schema(
     },
     Partner: {
       Id: {
-        Bucket: {
+        Image: {
           type: String,
           default: null,
         },
-        Key: { type: String, default: null },
       },
       Phone: {
         type: String,
@@ -50,7 +48,7 @@ const tripModel = new mongoose.Schema(
       },
       PhoneExt: {
         type: String,
-        default: null,
+        default: "+91",
       },
       Name: { type: String, default: null },
     },
