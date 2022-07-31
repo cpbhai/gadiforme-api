@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { phoneNumber } = require("../utils/validator");
 
 const locationObj = {
   State: {
@@ -93,10 +94,6 @@ const tripModel = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    PreferredVehicles: {
-      type: Array,
-      default: [],
-    },
     Purpose: {
       type: String,
       required: true,
@@ -110,5 +107,9 @@ const tripModel = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+tripModel.path("Client.Phone").validate(function (phone) {
+  return phoneNumber(phone);
+}, "Phone must be a 10 digit number");
 
 module.exports = mongoose.models.Trip || mongoose.model("Trip", tripModel);

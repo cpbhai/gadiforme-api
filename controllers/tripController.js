@@ -37,7 +37,13 @@ module.exports.new = async (req, res) => {
     sendSMS(message, ["8077015752"]);
     message = `Hi ${Name},\nWe will contact you Soon\n-Team GadiForMe`;
     sendSMS(message, [Phone]);
-    res.status(201).json({ success: true, message: "Trip Added Successfully" });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Trip Added Successfully",
+        trip: trip._id,
+      });
   } catch (error) {
     const response = errorResponse(error);
     console.log("Trip Add Error", error);
